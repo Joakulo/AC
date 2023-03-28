@@ -1,0 +1,10 @@
+a)
+  BX = 1000h
+  AL = 1000h - 1012h = 12h / 18
+
+b)
+  BX = 1500h
+
+c)
+  Imprime el numero ingresado.
+  En CL queda el valor ASCII del numero / caracter ingresado.
