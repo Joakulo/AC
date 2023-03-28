@@ -1,0 +1,14 @@
+Sin DelaySlot
+	60 ciclos
+	52 instrucciones
+	1.154 CPI
+
+DelaySlot NOP
+	63 ciclos
+	59 instrucciones
+	1.068 CPI
+
+DelaySlot
+	55 ciclos
+	51 instrucciones
+	1.078 CPI
