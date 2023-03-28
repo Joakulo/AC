@@ -1,0 +1,267 @@
+1)
+.data
+    TABLA:  .word   1, 2, 3, 4, 5
+
+.code
+    DADDI   R14, R0, 5
+    DADD    R15, R0, R0
+LOOP:SD     R15, TABLA(R15)
+    DADDI   R14, R14, -1
+    DADDI   R15, R15, 8
+    BNEZ    R14, LOOP
+    HALT
+a)  3-Genera una tabla de 5 elemento con los multiplos de 8 comenzando desde 0
+b)  8
+c)  4
+d)  El Forwarding permite utilizar resultados termporales evitando esperar a que sean escritos
+e)  EX
+
+f)  .code
+      DADDI    R14, R0, 5
+      DADD     R15, R0, R0
+LOOP: DADDI   R14, R14, -1
+      SD     R15, TABLA(R15)
+      BNEZ    R14, LOOP
+      DADDI   R15, R15, 8
+    HALT
+
+e)  5
+
+
+2)  No se, porque no hay dependencia de datos en el programa
+
+3)  [ ]  BNEZ    lazo
+    [ ]  LD,     R4, res
+    [ ]  DADDI   R5, 0, 7
+    [X]  DIV.D   F4, F5, F7
+
+4)  El MIPS no posee pila
+
+5)  LD      R4, dato(R0)
+    DADD    R1, R14, R6
+    DADDI   R2, R2, 1
+    SD      R5, dato(R12)
+    HALT
+
+    Se ejecutan 5 instruccion, donde no se producen atascos. Por lo tanto, se tienen que sumar esos 5 ciclos más los 4 del principio.
+    CPI = 9/5
+
+6)  Branch Target Buffer:  Predice si el salto se toma o no en base a una tabla de historia de saltos
+
+7)  Saltos:
+            ID:  Se calcula el destino y si se salta o no
+            EX:  Se almacena el nuevo PC
+                (Si llega a la etapa EX, es porque se saltó)
+
+8)  
+.data
+    TABLA:      .word   4,11,18,6,17,28,9,0,11,23,15,6,37,29,14
+    MENOR:      .word   20
+    MAYOR:      .word   10
+    CANTIDAD:   .word   15
+    TOTAL:      .word   0
+    NUEVO:      .word   0
+
+    .text
+        daddi   $t1, $zero, 0           # Iterador TABLA
+        daddi   $t2, $zero, 0           # Iterador NUEVO
+        ld      $t3, CANTIDAD($zero)    # Cantidad de iteraciones en el loop
+        ld      $s0, MAYOR($zero)       # Numero a comparar
+        daddi   $s1, $zero, 0           # TOTAL
+
+loop:   beqz    $t3, FIN
+        daddi   $t3, $t3, -1
+        ld      $t0, TABLA($t1)
+        daddi   $t1, $t1, 8
+        slt     $t4, $s0, $t0
+        bnez    $t4, GRANDE
+        j loop
+
+GRANDE: sd      $t0, NUEVO($t2)
+        daddi   $t2, $t2, 8
+        daddi   $s1, $s1, 1
+        j loop
+
+FIN:    sd      $s1, TOTAL($zero)
+    halt
+
+9)  Atascos RAW = 3: en el salto, debido a que todavia no se encuentra el valor de R1 en memoria.
+    Atascos BTB = 2: son en las dos iteraciones que genera el loop.
+    CPI = 23/14
+
+10) dadd    R3, R3, R2   -->   daddi  R1, R1, -1
+    daddi   R1, R1, -1         dadd   R3, R3, R2
+    
+11) Si el orden de las instrucciones se mantiene:
+        RAW = 3
+        BTB = 0
+
+    Si el orden de las instrucciones es el optimo:
+        RAW = 0
+        BTB = 0
+
+12)
+lazo:   daddi   R1, R1, -1
+        bnez    R1, lazo
+        dadd    R3, R3, R2
+
+13) Busca la instruccion en memoria e incrementa el PC.
+
+14) daddi   $t0, $zero, 4
+    sb      $t0, 0(s6)
+    lb      $t0, 0(s7)
+
+16) R4 = 10
+    R6 = -2
+    R7 = 40
+
+17) La instruccion DSLL se completa 3 veces
+
+18) LD      = 5
+    MUL.D   = 11
+    DIV.D   = 28
+    DADD    = 5
+    S.D     = 5
+    ADD.D   = 8
+
+19) No se puede determinar (el número de RAW dependerá del programa)
+
+20)
+.data
+    VECTOR:     .word   1234, 2345, 3546, 4567, 5678
+    NUEVO:      .word   0
+
+    .text
+        daddi   $t1, $zero, 0
+        daddi   $t2, $zero, 5
+
+loop:   ld      $t0, VECTOR($t1)
+        daddi   $t2, $t2, -1
+        daddi   $t0, $t0, +1
+        sd      $t0, NUEVO($t1)
+        daddi   $t1, $t1, 8
+    bnez    $t2, loop
+
+    halt
+
+21) Se decodifica la instruccion
+    Se accede al banco de registros por los operandos
+    Se calcula el valor del operando inmediato
+    Si es un salto, se almacena el nuevo PC
+
+22)
+.data
+    CONTROL:  .word32    0x10000
+    DATA:     .word32    0x10008
+    MSJ:      .asciiz    "Ingrese un numero"
+    N:        .word      12
+    tabla1:   .double    0,1,2,3,4,5,6,7,8,9,10,11
+    tabla2:   .double    0
+
+    .text
+        lw      $s0, CONTROL($zero)
+        lw      $s1, DATA($zero)
+        ld      $a0, N($zero)
+        jal INGRESO
+
+        daddi   $a0, $zero, tabla1
+        daddi   $a1, $zero, tabla2
+        ld      $a2, N($zero)
+        jal POTENCIACION
+
+halt
+
+INGRESO: daddi   $t0, $zero, 4
+        daddi   $t1, $zero, 8
+        daddi   $t4, $zero, 0
+
+        daddi   $t2, $zero, MSJ         
+loop:   beqz    $a0, FIN
+        daddi   $a0, $a0, -1
+
+        sd      $t2, 0($s1)
+        sd      $t0, 0($s0)             # Imprime el mensaje
+        sd      $t1, 0($s0)             # Pide un numero
+        ld      $t3, 0($s1)             
+        sd      $t3, tabla1($t4)        # Lo guarda en memoria
+        daddi   $t4, $t4, 8
+        j loop      
+FIN:    jr $ra
+
+
+POTENCIACION: beqz    $a2, FIN2
+        l.d     F1, 0($a0)
+        mul.d   F1, F1, F1
+        daddi   $a0, $a0, 8
+        daddi   $a2, $a2, -1
+        s.d     F1, 0($a1)
+        daddi   $a1, $a1, 8
+        j POTENCIACION
+FIN2: halt
+
+
+23)
+LD R4, A (R0)       IF  ID  EX  MEM  WB
+DADD R2, R4, R3         IF  ID  RAW  RAW  EX  MEM  WB
+HALT                        IF            ID  EX  MEM  WB
+
+24) CPI = 9/3
+
+25) Ciclos = 8
+    RAW = 1
+
+26)
+    R1 = 1
+    R2 = 6
+    R3 = 6
+    R5 = 0
+    R15 = 8
+
+27) La opcion Branch Target Buffer no puede habilitarse junto con la opcion Delay Slot
+
+28)
+a)  Con BTB = 2
+    Sin BTB = 1
+
+b)  Forwarding se encuentra habilitado, debido a que no hay un RAW en el primer salto.
+
+c) -
+
+29) jr $ra
+
+30)
+a)  La seguna instruccion usa registros alterados por la primera
+b)  Habilitando Forwarding
+c)  9 ciclos
+d)  Esta arquitectura no utiliza flags de estado
+e)  7 ciclos
+
+31)
+f)  Igual cantidad de ciclos para completarse
+g)  Habilitada
+h)  No, porque se ejecutará el HALT en la primer iteracion del loop abortando el programa
+i)  BTB mejoró en este caso el tiempo de ejecucion del programa por la cantidad de saltos en el loop
+j)  Opcion 1
+
+32) c-El acceso a memoria está limitado sólo a dos instrucciones
+
+33) 
+
+
+34) 
+
+35) Al finalizar la etapa WB
+
+36) Al finalizar la etapa EX
+
+37) Se pueden producir atascos por dependencias de datos WAW.
+
+38) En la etapa ID.
+
+39) a-98 veces
+
+40) Verificar el valor de un registro
+
+41) 8 ciclos
+
+42) Habilitando Branch Target Buffer
