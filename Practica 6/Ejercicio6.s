@@ -28,7 +28,7 @@
     sd      $t4, 0($s0)             ; Imprime el mensaje
     sd      $t5, 0($s0)             ; Pide un entero
     lbu     $t0, 0($s1)
-    sb      $t0, color($zero)
+    sb      $t0, color($t1)
     
     daddi   $t0, $zero, MSJG
     sd      $t0, 0($s1)             ; Carga el mensaje en DATA
@@ -36,7 +36,7 @@
     sd      $t5, 0($s0)             ; Pide un entero
     lbu     $t0, 0($s1)
     daddi   $t1, $zero, 1
-    sb      $t0, color($zero)
+    sb      $t0, color($t1)
 
     daddi   $t0, $zero, MSJB
     sd      $t0, 0($s1)             ; Carga el mensaje en DATA
@@ -44,7 +44,7 @@
     sd      $t5, 0($s0)             ; Pide un entero
     lbu     $t0, 0($s1)
     daddi   $t1, $t1, 1
-    sb      $t0, color($zero)
+    sb      $t0, color($t1)
 
     daddi   $t0, $zero, MSJX
     sd      $t0, 0($s1)
